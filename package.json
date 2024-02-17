@@ -1,0 +1,11 @@
+{
+  "name": "web-audit-module-html-validator",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "html-validator": "^6.0.1",
+    "web_audit": "^5.0.0-rc3"
+  },
+  "version": "0.0.0"
+}
