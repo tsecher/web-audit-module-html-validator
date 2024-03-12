@@ -1,3 +1,3 @@
-# Assets Coverage (Web audit Module)
+# HTML Validator (Web audit Module)
 
-Assets (JS and CSS) coverage module for web_audit.
+HTML Validator module for web_audit.

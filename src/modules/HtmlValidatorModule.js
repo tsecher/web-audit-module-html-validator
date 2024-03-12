@@ -19,7 +19,7 @@ export const HtmlValidatorModuleEvents = {
  */
 export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule {
 	get name() {
-		return 'html-validator';
+		return 'HTML Validator';
 	}
 
 	get id() {
@@ -106,10 +106,18 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 		this.context?.eventBus.emit(HtmlValidatorModuleEvents.beforeAnalyse, eventData);
 		this.context?.eventBus.emit(ModuleEvents.beforeAnalyse, eventData);
 
-		const result = await validator({
-			url: urlWrapper.url.toString(),
-			data: this.contextsData[contextName],
-		})
+		let result;
+		try{
+			result = await validator({
+				url: urlWrapper.url.toString(),
+				data: this.contextsData[contextName],
+			})
+		}
+		catch(err){
+			result = {}
+			this.context?.config?.logger.error(err);
+		}
+
 
 		// Event Data.
 		eventData.result = {
@@ -121,7 +129,7 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 		// Parse results
 		const summaryResult = {};
 		const allowedTypes = this.getOptions().allowedTypes;
-		result.messages
+		result?.messages
 			.filter(item => allowedTypes.includes(item.type))
 			.forEach(item => {
 				// Store details.
