@@ -7,5 +7,5 @@
     "html-validator": "^6.0.1",
     "web_audit": "^5.0.0-rc3"
   },
-  "version": "1.0.0-rc1"
+  "version": "1.0.1-rc1"
 }
