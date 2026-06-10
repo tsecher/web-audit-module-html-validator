@@ -1,0 +1,85 @@
+{
+    "id": "html_validator",
+    "label": "HTML Validator",
+    "description": "W3C HTML validator",
+    "types": [
+      "page"
+    ],
+    "structure": {
+      "html_validator": {
+        "label": "HTML Validator",
+        "description": "HTML Validator (W3C)",
+        "structure": {
+          "url": {
+            "label": "Url",
+            "description": "The audited page",
+            "type": "string"
+          },
+          "context": {
+            "label": "Context",
+            "description": "The context",
+            "type": "string"
+          },
+          "error": {
+            "label": "Errors",
+            "description": "Number of W3C errors.",
+            "type": "number",
+            "values": {
+              "target": 0,
+              "min_target": 2
+            }
+          },
+          "warning": {
+            "label": "Warnings",
+            "description": "Number of W3C warnings.",
+            "type": "number",
+            "values": {
+              "target": 0,
+              "min_target": 5
+            }
+          },
+          "info": {
+            "label": "Info",
+            "description": "Number of W3C warnings.",
+            "type": "number",
+            "values": {
+              "target": 0,
+              "min_target": 5
+            }
+          }
+        }
+      },
+      "html_validator_details": {
+        "label": "HTML Validator details",
+        "description": "HTML Validator details (W3C)",
+        "structure": {
+          "url": {
+            "label": "Url",
+            "description": "The audited page",
+            "type": "string"
+          },
+          "context": {
+            "label": "Context",
+            "description": "The context",
+            "type": "string"
+          },
+          "type": {
+            "label": "Type",
+            "description": "Type of message.",
+            "type": "string"
+          },
+          "message": {
+            "label": "Message",
+            "description": "Message.",
+            "type": "string"
+          },
+          "extract": {
+            "label": "Extract",
+            "description": "Extract.",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+  
