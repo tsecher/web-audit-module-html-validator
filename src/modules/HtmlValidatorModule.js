@@ -124,7 +124,6 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 				// Store details.
 				summaryResult.url = item.url = urlWrapper.url.toString();
 				summaryResult.context = item.context = contextName;
-				
 				this.context?.config?.storage?.add(this, 'html_validator_details', this.context, item);
 
 				// Add to summary.
