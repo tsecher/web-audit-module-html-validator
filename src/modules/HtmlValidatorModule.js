@@ -2,6 +2,8 @@ import {AbstractPuppeteerJourneyModule} from 'web_audit/dist/journey/AbstractPup
 import {PuppeteerJourneyEvents} from 'web_audit/dist/journey/AbstractPuppeteerJourney.js';
 import {ModuleEvents} from 'web_audit/dist/modules/ModuleInterface.js';
 import validator from 'html-validator';
+import schema from "./html-validator.schema.json" with {type: "json"};
+import { DefaultDeserializer } from 'v8';
 
 /**
  * html-validator Module events.
@@ -36,22 +38,9 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 	 */
 	async init(context) {
 		this.context = context;
-		// Install assets coverage store.
-		this.context.config.storage?.installStore('html_validator', this.context, {
-			url: 'Url',
-			context: 'Context',
-			error: 'Errors',
-			warning: 'Warnings',
-			info: 'Infos',
-		});
 
-		this.context.config.storage?.installStore('html_validator_details', this.context, {
-			url: 'Url',
-			context: 'Context',
-			type: 'Type',
-			message: 'Message',
-			extract: 'Extract',
-		});
+		// Install Metatags store.
+		this.context.config.storage?.installSchema(this, this.context);
 
 		// Emit.
 		this.context.eventBus.emit(HtmlValidatorModuleEvents.createHtmlValidatorModule, {module: this});
@@ -135,17 +124,26 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 				// Store details.
 				summaryResult.url = item.url = urlWrapper.url.toString();
 				summaryResult.context = item.context = contextName;
-				this.context?.config?.storage?.add('html_validator_details', this.context, item);
+				
+				this.context?.config?.storage?.add(this, 'html_validator_details', this.context, item);
 
 				// Add to summary.
 				summaryResult[item.type] = summaryResult[item.type] + 1 || 1;
 			})
 
 		this.context?.eventBus.emit(HtmlValidatorModuleEvents.onResult, eventData);
-		this.context?.config?.logger.result(`html-validator`, summaryResult, urlWrapper.url.toString());
-		this.context?.config?.storage?.add('html_validator', this.context, summaryResult);
+		this.context?.config?.logger.result(`html_validator`, summaryResult, urlWrapper.url.toString());
+		
+		this.context?.config?.storage?.add(this, 'html_validator', this.context, summaryResult);
+		
 		this.context?.eventBus.emit(ModuleEvents.afterAnalyse, eventData);
 		this.context?.eventBus.emit(HtmlValidatorModuleEvents.afterAnalyse, eventData);
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	getSchema() {
+		return schema;
+	}
 }
