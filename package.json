@@ -4,7 +4,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "html-validator": "^6.0.1",
+    "vnu-jar": "^26.5.29",
     "web_audit": "^5.0.0-rc3"
   },
   "version": "1.0.0-rc1"

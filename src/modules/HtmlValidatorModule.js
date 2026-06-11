@@ -1,9 +1,9 @@
 import {AbstractPuppeteerJourneyModule} from 'web_audit/dist/journey/AbstractPuppeteerJourneyModule.js';
 import {PuppeteerJourneyEvents} from 'web_audit/dist/journey/AbstractPuppeteerJourney.js';
 import {ModuleEvents} from 'web_audit/dist/modules/ModuleInterface.js';
-import validator from 'html-validator';
-import schema from "./html-validator.schema.json" with {type: "json"};
-import { DefaultDeserializer } from 'v8';
+import schema from './html-validator.schema.json' with {type: 'json'};
+import { execFile } from 'child_process';
+import vnuJar from 'vnu-jar';
 
 /**
  * html-validator Module events.
@@ -72,7 +72,7 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 		this.context?.eventBus.emit(ModuleEvents.startsComputing, {module: this});
 		for (const contextName in this.contextsData) {
 			if (contextName) {
-				this.analyseContext(contextName, urlWrapper);
+				await this.analyseContext(contextName, urlWrapper);
 			}
 		}
 		this.context?.eventBus.emit(ModuleEvents.endsComputing, {module: this});
@@ -97,10 +97,7 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 
 		let result;
 		try{
-			result = await validator({
-				url: urlWrapper.url.toString(),
-				data: this.contextsData[contextName],
-			})
+			result = await this.getW3CValidation(this.contextsData[contextName]);
 		}
 		catch(err){
 			result = {}
@@ -118,8 +115,7 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 		// Parse results
 		const summaryResult = {};
 		const allowedTypes = this.getOptions().allowedTypes;
-		result?.messages
-			.filter(item => allowedTypes.includes(item.type))
+		result?.filter(item => allowedTypes.includes(item.type))
 			.forEach(item => {
 				// Store details.
 				summaryResult.url = item.url = urlWrapper.url.toString();
@@ -133,7 +129,7 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 		this.context?.eventBus.emit(HtmlValidatorModuleEvents.onResult, eventData);
 		this.context?.config?.logger.result(`html_validator`, summaryResult, urlWrapper.url.toString());
 		this.context?.config?.storage?.add(this, 'html_validator', this.context, summaryResult);
-		
+
 		this.context?.eventBus.emit(ModuleEvents.afterAnalyse, eventData);
 		this.context?.eventBus.emit(HtmlValidatorModuleEvents.afterAnalyse, eventData);
 	}
@@ -143,5 +139,32 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 	 */
 	getSchema() {
 		return schema;
+	}
+
+	async getW3CValidation(html){
+		return new Promise((resolve, reject) => {
+			const proc = execFile(
+				"java",
+				["-jar", vnuJar, "--format", "json", "-"],
+				(err, stdout, stderr) => {
+					try {
+						const result = JSON.parse(stderr);
+						resolve(result.messages ?? []);
+					} catch (e) {
+						reject(new Error(`vnu parse error: ${stderr}`));
+					}
+				}
+			);
+
+			// Absorber l'erreur EPIPE sur stdin sans crasher le process
+			proc.stdin.on("error", (err) => {
+				if (err.code !== "EPIPE") reject(err);
+			});
+
+			proc.stdin.write(html, (err) => {
+				if (err && err.code !== "EPIPE") reject(err);
+				proc.stdin.end();
+			});
+		});
 	}
 }
