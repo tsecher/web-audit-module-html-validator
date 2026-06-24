@@ -127,8 +127,7 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 			})
 
 		this.context?.eventBus.emit(HtmlValidatorModuleEvents.onResult, eventData);
-		// this.context?.config?.logger.result(`html_validator`, summaryResult, urlWrapper.url.toString());
-		this.context?.eventBus.emit(ModuleEvents.onAnalyseSummary, {module: this, group_id:`html_validator` , url: urlWrapper, summary: eventData.result});
+		this.context?.eventBus.emit(ModuleEvents.onAnalyseSummary, {module: this, group_id:`html_validator` , url: urlWrapper, summary: summaryResult});
 		this.context?.config?.storage?.add(this, 'html_validator', this.context, summaryResult);
 
 		this.context?.eventBus.emit(ModuleEvents.afterAnalyse, eventData);
