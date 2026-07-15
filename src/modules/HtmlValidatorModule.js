@@ -53,7 +53,7 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 		journey.on(PuppeteerJourneyEvents.JOURNEY_START, async (data) => {
 			this.contextsData = {};
 		});
-		journey.on(PuppeteerJourneyEvents.JOURNEY_NEW_CONTEXT, async (data) => {
+		journey.on(PuppeteerJourneyEvents.JOURNEY_END_CONTEXT, async (data) => {
 			this.contextsData[data.name] = await this.getContextData(data);
 		});
 	}
