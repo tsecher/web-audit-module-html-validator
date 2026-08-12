@@ -2,7 +2,7 @@ import {AbstractPuppeteerJourneyModule} from 'web_audit/dist/journey/AbstractPup
 import {PuppeteerJourneyEvents} from 'web_audit/dist/journey/AbstractPuppeteerJourney.js';
 import {ModuleEvents} from 'web_audit/dist/modules/ModuleInterface.js';
 import schema from './html-validator.schema.json' with {type: 'json'};
-import { execFile } from 'child_process';
+import {execFile} from 'child_process';
 import vnuJar from 'vnu-jar';
 
 /**
@@ -96,10 +96,9 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 		this.context?.eventBus.emit(ModuleEvents.beforeAnalyse, eventData);
 
 		let result;
-		try{
+		try {
 			result = await this.getW3CValidation(this.contextsData[contextName]);
-		}
-		catch(err){
+		} catch (err) {
 			result = {}
 			this.context?.config?.logger.error(err);
 		}
@@ -141,7 +140,7 @@ export default class HtmlValidatorModule extends AbstractPuppeteerJourneyModule 
 		return schema;
 	}
 
-	async getW3CValidation(html){
+	async getW3CValidation(html) {
 		return new Promise((resolve, reject) => {
 			const proc = execFile(
 				"java",
