@@ -12,5 +12,5 @@
     "vnu-jar": "^26.5.29",
     "web_audit": "https://github.com/tsecher/web-audit.git"
   },
-  "version": "2.1.0"
+  "version": "2.1.1"
 }
