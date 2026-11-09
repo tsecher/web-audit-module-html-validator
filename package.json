@@ -5,6 +5,7 @@
   "type": "module",
   "keywords": [
     "web-audit",
+    "web-audit-plugin",
     "html-validator"
   ],
   "dependencies": {
