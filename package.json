@@ -3,6 +3,10 @@
   "main": "index.js",
   "license": "MIT",
   "type": "module",
+  "keywords": [
+    "web-audit",
+    "html-validator"
+  ],
   "dependencies": {
     "vnu-jar": "^26.5.29",
     "web_audit": "https://github.com/tsecher/web-audit.git"
